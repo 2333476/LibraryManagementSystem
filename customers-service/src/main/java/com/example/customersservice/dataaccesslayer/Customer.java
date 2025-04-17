@@ -22,7 +22,9 @@ public class Customer {
     private String emailAddress;
     private String username;
     private String password;
+
     @Embedded
+    @NonNull
     private Address customerAddress;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
@@ -31,5 +33,19 @@ public class Customer {
     )
 //    @Column(name = "phone_number")
     private List<PhoneNumber> phoneNumbers;
+
+
+    public Customer(CustomerIdentifier customerIdentifier, String firstName, String lastName, String emailAddress, Address customerAddress) {
+        this.customerIdentifier = customerIdentifier;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+        this.customerAddress = customerAddress;
+    }
+
+
+
+
+
 
 }

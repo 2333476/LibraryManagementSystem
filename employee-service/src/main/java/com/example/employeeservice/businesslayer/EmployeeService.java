@@ -19,4 +19,6 @@ public interface EmployeeService {
     public EmployeeResponseModel addEmployee(EmployeeRequestModel postData);
 
     EmployeeResponseModel updateEmployee(String employeeId, EmployeeRequestModel postData);
+
+
 }

@@ -69,6 +69,20 @@ public class CustomerServiceImpl implements CustomerService {
         if (!pw1.equals(pw2)) {
             message = "Entered passwords do not match!";
         } else {
+
+            System.out.println("Street: " + newCustomerData.getStreetAddress());
+            System.out.println("City: " + newCustomerData.getCity());
+            System.out.println("Province: " + newCustomerData.getProvince());
+            System.out.println("Postal: " + newCustomerData.getPostalCode());
+
+
+            if (newCustomerData.getStreetAddress() == null ||
+                    newCustomerData.getCity() == null ||
+                    newCustomerData.getProvince() == null ||
+                    newCustomerData.getPostalCode() == null) {
+                throw new IllegalArgumentException("All address fields must be provided.");
+            }
+
             CustomerIdentifier customerIdentifier = new CustomerIdentifier();
             Address newAddress = new Address(newCustomerData.getStreetAddress(),
                     newCustomerData.getCity(), newCustomerData.getProvince(),

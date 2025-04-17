@@ -20,4 +20,8 @@ public interface CustomerResponseMapper {
     @Mapping(target = "city", ignore = true)
     CustomerResponseModel entityToResponseModel(Customer customer);
     List<CustomerResponseModel> entityListToResponseModelList(List<Customer> customers);
+
+
+
+
 }
