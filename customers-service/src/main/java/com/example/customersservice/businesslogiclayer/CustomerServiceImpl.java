@@ -10,6 +10,7 @@ import com.example.customersservice.datamapperlayer.CustomerRequestMapper;
 import com.example.customersservice.datamapperlayer.CustomerResponseMapper;
 import com.example.customersservice.presentationlayer.CustomerRequestModel;
 import com.example.customersservice.presentationlayer.CustomerResponseModel;
+import com.example.customersservice.utils.exceptions.DuplicateCustomerNameException;
 import com.example.customersservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,91 +58,76 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel addCustomer(CustomerRequestModel newCustomerData) {
-        String message = ""; Customer savedCustomer = new Customer();
+        // ✅ NEW DUPLICATE CHECK
+        if (customerRepository.existsByFirstNameAndLastName(newCustomerData.getFirstName(), newCustomerData.getLastName())) {
+            throw new DuplicateCustomerNameException("Customer with name " + newCustomerData.getFirstName() + " " + newCustomerData.getLastName() + " already exists.");
+        }
+
         String pw1 = newCustomerData.getPassword1();
         String pw2 = newCustomerData.getPassword2();
-        if (pw1 == null) {
-            pw1 = "";
-        }
-        if (pw2 == null) {
-            pw2 = "";
-        }
+        if (pw1 == null) pw1 = "";
+        if (pw2 == null) pw2 = "";
         if (!pw1.equals(pw2)) {
-            message = "Entered passwords do not match!";
-        } else {
-
-            System.out.println("Street: " + newCustomerData.getStreetAddress());
-            System.out.println("City: " + newCustomerData.getCity());
-            System.out.println("Province: " + newCustomerData.getProvince());
-            System.out.println("Postal: " + newCustomerData.getPostalCode());
-
-
-            if (newCustomerData.getStreetAddress() == null ||
-                    newCustomerData.getCity() == null ||
-                    newCustomerData.getProvince() == null ||
-                    newCustomerData.getPostalCode() == null) {
-                throw new IllegalArgumentException("All address fields must be provided.");
-            }
-
-            CustomerIdentifier customerIdentifier = new CustomerIdentifier();
-            Address newAddress = new Address(newCustomerData.getStreetAddress(),
-                    newCustomerData.getCity(), newCustomerData.getProvince(),
-                    newCustomerData.getPostalCode());
-            Customer customer = this.customerRequestMapper.requestModelToEntity(
-                    newCustomerData, customerIdentifier, newAddress
-            );
-//                customer.setCustomerIdentifier( customerIdentifier );
-            customer.setPassword(newCustomerData.getPassword1());
-            savedCustomer = this.customerRepository.save(customer);
-            if (savedCustomer != null)
-                message = "Customer saved successfully.";
-            else
-                message = "Could not save new customer into repository.";
-
+            throw new IllegalArgumentException("Entered passwords do not match!");
         }
+
+        if (newCustomerData.getStreetAddress() == null ||
+                newCustomerData.getCity() == null ||
+                newCustomerData.getProvince() == null ||
+                newCustomerData.getPostalCode() == null) {
+            throw new IllegalArgumentException("All address fields must be provided.");
+        }
+
+        CustomerIdentifier customerIdentifier = new CustomerIdentifier();
+        Address newAddress = new Address(newCustomerData.getStreetAddress(),
+                newCustomerData.getCity(), newCustomerData.getProvince(),
+                newCustomerData.getPostalCode());
+
+        Customer customer = this.customerRequestMapper.requestModelToEntity(
+                newCustomerData, customerIdentifier, newAddress);
+        customer.setPassword(pw1);
+
+        Customer savedCustomer = this.customerRepository.save(customer);
         return this.customerResponseMapper.entityToResponseModel(savedCustomer);
     }
 
     @Override
-    public CustomerResponseModel updateCustomer(String customerId,
-                                                CustomerRequestModel newCustomerData) {
-        String message = ""; Customer savedCustomer = new Customer();
-        CustomerIdentifier  cid =  new CustomerIdentifier(customerId);
+    public CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel newCustomerData) {
+        CustomerIdentifier cid = new CustomerIdentifier(customerId);
         Customer foundCustomer = this.customerRepository.findCustomerByCustomerIdentifier(cid);
-        if (foundCustomer == null) {
-            message = "Customer with id: " + customerId + " not found in repository.";
-        } else {
-            String pw1 = newCustomerData.getPassword1();
-            String pw2 = newCustomerData.getPassword2();
-            if (pw1 == null) {
-                pw1 = "";
-            }
-            if (pw2 == null) {
-                pw2 = "";
-            }
-            if (pw1.equals(pw2)) {
-                Address newAddress = new Address(newCustomerData.getStreetAddress(),
-                        newCustomerData.getCity(), newCustomerData.getProvince(),
-                        newCustomerData.getPostalCode());
-                Customer customer = this.customerRequestMapper.requestModelToEntity(
-                        newCustomerData,
-                        foundCustomer.getCustomerIdentifier(),
-                        newAddress
-                );
-                customer.setId(foundCustomer.getId());  // important
-                customer.setPassword(newCustomerData.getPassword1());
-                 savedCustomer = this.customerRepository.save(customer);
-                if (savedCustomer != null)
-                    message = "Customer updated successfully.";
-                else
-                    message = "Could not save new customer into repository.";
 
-            } else
-                message = "Entered passwords do not match!";
+        if (foundCustomer == null) {
+            throw new NotFoundException("Customer with id: " + customerId + " not found in repository.");
         }
+
+        // ✅ DUPLICATE CHECK on name if it's changing
+        if (!foundCustomer.getFirstName().equals(newCustomerData.getFirstName()) ||
+                !foundCustomer.getLastName().equals(newCustomerData.getLastName())) {
+            if (customerRepository.existsByFirstNameAndLastName(newCustomerData.getFirstName(), newCustomerData.getLastName())) {
+                throw new DuplicateCustomerNameException("Another customer with name " + newCustomerData.getFirstName() + " " + newCustomerData.getLastName() + " already exists.");
+            }
+        }
+
+        String pw1 = newCustomerData.getPassword1();
+        String pw2 = newCustomerData.getPassword2();
+        if (pw1 == null) pw1 = "";
+        if (pw2 == null) pw2 = "";
+        if (!pw1.equals(pw2)) {
+            throw new IllegalArgumentException("Entered passwords do not match!");
+        }
+
+        Address newAddress = new Address(newCustomerData.getStreetAddress(),
+                newCustomerData.getCity(), newCustomerData.getProvince(),
+                newCustomerData.getPostalCode());
+
+        Customer updatedCustomer = this.customerRequestMapper.requestModelToEntity(
+                newCustomerData, foundCustomer.getCustomerIdentifier(), newAddress);
+        updatedCustomer.setId(foundCustomer.getId());
+        updatedCustomer.setPassword(pw1);
+
+        Customer savedCustomer = this.customerRepository.save(updatedCustomer);
         return this.customerResponseMapper.entityToResponseModel(savedCustomer);
     }
-
     @Override
 
     public String deleteCustomerbyCustomerId(String customerId) {

@@ -7,4 +7,7 @@ public interface CustomerRepository extends
     Customer findCustomerByCustomerIdentifier(CustomerIdentifier customerIdentifier);
 
     Customer findCustomerByEmailAddress(String emailAddress);
+
+    boolean existsByFirstNameAndLastName(String firstName, String lastName);
+
 }

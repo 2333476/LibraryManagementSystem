@@ -50,4 +50,17 @@ public class EmployeeController {
     }
 
 
+
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable String employeeId) {
+        if (employeeId.length() != UUID_SIZE) {
+            throw new InvalidInputException("Employee id is invalid: " + employeeId);
+        }
+        log.debug("5. Received in Employees-Service deleteEmployee");
+        employeeService.deleteEmployee(employeeId);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+
+
 }

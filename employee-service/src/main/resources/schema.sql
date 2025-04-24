@@ -1,12 +1,10 @@
 -- Désactive les vérifications des clés étrangères
-SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS employee_phonenumbers;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS department_positions;
 DROP TABLE IF EXISTS departments;
 
-SET FOREIGN_KEY_CHECKS=1;
 
 -- Table des départements
 CREATE TABLE IF NOT EXISTS departments (

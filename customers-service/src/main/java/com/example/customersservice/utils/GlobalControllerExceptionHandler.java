@@ -3,7 +3,7 @@ package com.example.customersservice.utils;
 
 
 
-import com.example.customersservice.utils.exceptions.DuplicateVinException;
+import com.example.customersservice.utils.exceptions.DuplicateCustomerNameException;
 import com.example.customersservice.utils.exceptions.InvalidInputException;
 import com.example.customersservice.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(DuplicateVinException.class)
+    @ExceptionHandler(DuplicateCustomerNameException.class)
     public HttpErrorInfo handleDuplicateVinException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }

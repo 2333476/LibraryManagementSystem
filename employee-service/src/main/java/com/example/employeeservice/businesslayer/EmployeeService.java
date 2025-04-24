@@ -20,5 +20,8 @@ public interface EmployeeService {
 
     EmployeeResponseModel updateEmployee(String employeeId, EmployeeRequestModel postData);
 
+    void deleteEmployee(String employeeId);
+
+
 
 }

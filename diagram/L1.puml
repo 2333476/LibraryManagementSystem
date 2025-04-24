@@ -1,0 +1,20 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context diagram for Library Management System
+
+Person(staff, "Librarian", "A staff of the Library Management System.")
+System(libraryManagement_System, "Library Management System", "Allows staff to access and manage book, libraries and customer data")
+Person(member, "Library Member", "A member of the Library Management System.")
+System_Ext(book_publisher, "Book Publisher", "The internal Library Management System Exchange information with the book publisher.")
+
+
+Rel(staff, libraryManagement_System, "Tracks inventory and customer purchases using.")
+Rel(member, libraryManagement_System, "Member book in books from the system.")
+Rel(book_publisher, libraryManagement_System, "Book Publisher exchange information with the Library Management.")
+
+@enduml

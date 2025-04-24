@@ -1,0 +1,50 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+AddElementTag("microService", $shape=EightSidedShape(), $bgColor="CornflowerBlue", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("storage", $shape=RoundedBoxShape(), $bgColor="lightSkyBlue", $fontColor="white")
+
+SHOW_PERSON_OUTLINE()
+
+title System Context diagram for Library Management System
+
+Person(member, "Library Member", "A registered member of the library")
+Person(librarian, "Librarian", "A staff member of the library")
+
+System_Boundary(c1, "Library Management System") {
+    Container(web_app, "Web Application", "Java, Spring MVC", "Delivers the static content and the library management SPA")
+    Container(spa, "Single-Page App", "JavaScript, React", "Provides all the library management functionality via web browser")
+    Container(api_gateway, "API-gateway", "Java, Docker Container", "Provides library functionality via API")
+    Container(library_service, "library-service", "Java, Docker Container", "Core library management service", $tags = "microService")
+    Container(catalog_service, "catalog-service", "Java, Docker Container", "Book catalog management service", $tags = "microService")
+    Container(member_service, "member-service", "Java, Docker Container", "Member management service", $tags = "microService")
+    Container(staff_service, "librarian-service", "Java, Docker Container", "Staff management service", $tags = "microService")
+
+    ContainerDb(library_db, "library-db", "MONGODB", "Stores library core data and aggregates", $tags = "storage")
+    ContainerDb(catalog_db, "book-db", "POSTGRESQL", "Stores book information and availability", $tags = "storage")
+    ContainerDb(member_db, "customer-db", "MySQL", "Stores member information and subscriptions", $tags = "storage")
+    ContainerDb(staff_db, "employee-db", "MySQL", "Stores librarian details and permissions", $tags = "storage")
+}
+
+Rel_Neighbor(web_app, spa, "Delivers")
+Rel(spa, api_gateway, "Uses", "async, JSON/HTTPS")
+
+Rel(member, web_app, "Uses", "HTTPS")
+Rel(librarian, web_app, "Uses", "HTTPS")
+
+Rel(api_gateway, library_service, "Uses", "HTTPS")
+Rel(api_gateway, catalog_service, "Uses", "HTTPS")
+Rel(api_gateway, member_service, "Uses", "HTTPS")
+Rel(api_gateway, staff_service, "Uses", "HTTPS")
+
+Rel(catalog_service, library_service, "References", "HTTPS")
+Rel(member_service, library_service, "References", "HTTPS")
+Rel(staff_service, library_service, "References", "HTTPS")
+
+Rel_D(library_service, library_db, "reads/writes", "JDBC/SQL/TCP")
+Rel_D(catalog_service, catalog_db, "reads/writes", "JDBC/SQL/TCP")
+Rel_D(member_service, member_db, "reads/writes", "JDBC/SQL/TCP")
+Rel_D(staff_service, staff_db, "reads/writes", "JDBC/SQL/TCP")
+
+@enduml

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
@@ -9,12 +7,15 @@ services:
       MYSQL_DATABASE: customers_db
       MYSQL_ROOT_PASSWORD: isaac
     ports:
-      - "3306:3306"
+      - "3307:3306"  # Port externe différent pour éviter les conflits
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
 
   customers-service:
-    build: .
+    build:
+      context: .     # ✅ Garde seulement cette ligne
     depends_on:
       - mysql
     ports:

@@ -1,5 +1,5 @@
 INSERT INTO customers (customer_id, last_name, first_name, email_address, street_address, postal_code, city, province,
-                        username, password)
+                       username, password)
 VALUES
     ('123e4567-e89b-12d3-a456-556642440000', 'Smith', 'John', 'john.smith@example.com', '123 Maple Street', 'M1M 1M1', 'Toronto', 'Ontario', 'sjhon', 'pwd1'),
     ('223e4567-e89b-12d3-a456-556642440001', 'Johnson', 'Emily', 'emily.johnson@example.com', '456 Oak Avenue', 'V6B 2W1', 'Vancouver', 'British Columbia','jemily', 'pwd2'),

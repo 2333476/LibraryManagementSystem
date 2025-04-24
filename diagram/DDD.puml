@@ -1,0 +1,126 @@
+@startuml
+hide circle
+top to bottom direction
+
+!define ENTITY(entityName) class entityName << Entity >>
+!define AGGREGATE(aggregateName) class aggregateName << Aggregate >>
+!define AGGREGATE_ROOT(aggregateRootName) class aggregateRootName << Aggregate Root >>
+!define VALUE_OBJECT(valueObjectName) class valueObjectName << Value Object >>
+!pragma useVerticalIf on
+skinparam dpi 350
+skinparam packageStyle rectangle
+skinparam rectangle {
+    BackgroundColor #f7f4eb
+    BorderColor Black
+}
+
+' Aggregate Root
+Package "Library Management (Aggregate Root)" <<Rectangle>> #FFEB3B {
+    AGGREGATE_ROOT(Library) #lightpink {
+        name: String
+        address: String
+        maxCapacity: Integer
+    }
+    VALUE_OBJECT(LibraryIdentifier) #Bisque {
+        libraryId: UUID
+    }
+    Library --> LibraryIdentifier
+
+    note right of Library
+        maxCapacity must be greater than 0
+    end note
+}
+
+' Book Domain
+Package "Catalog Management Sub-Domain" <<Rectangle>> #D1C4E9 {
+    ENTITY(Book) #lightblue {
+        title: String
+        author: String
+        genre: String
+        isbn: String
+        price: Double
+        publishedDate: String
+    }
+    VALUE_OBJECT(BookIdentifier) #Bisque {
+        bookId: UUID
+    }
+    LibraryIdentifier <-- Book
+    Book --> BookIdentifier
+
+    note right of Book
+        isbn must be unique
+    end note
+}
+
+' Customer Domain
+Package "Member Management Sub-Domain" <<Rectangle>> #E8F5E9 {
+    ENTITY(Customer) #lightblue {
+        firstName: String
+        lastName: String
+        emailAddress: String
+        username: String
+        password: String
+        phoneNumbers: List<PhoneNumber>
+    }
+    VALUE_OBJECT(CustomerIdentifier) #Bisque {
+        customerId: UUID
+    }
+    VALUE_OBJECT(CustomerAddress) #Bisque {
+        streetAddress: String
+        city: String
+        province: String
+        postalCode: String
+    }
+    VALUE_OBJECT(PhoneNumber) #Bisque {
+        type: PhoneType
+        number: String
+    }
+    VALUE_OBJECT(PhoneType) #Bisque {
+        value: String
+    }
+    LibraryIdentifier <-- Customer
+    Customer --> CustomerIdentifier
+    Customer o--> CustomerAddress
+    Customer o--> PhoneNumber
+    PhoneNumber --> PhoneType
+
+    note right of Customer
+        first name and last name must be unique
+    end note
+}
+
+' Employee Domain
+Package "Staff Management Sub-Domain" <<Rectangle>> #3399FF {
+    ENTITY(Employee) #lightblue {
+        firstName: String
+        lastName: String
+        emailAddress: String
+        phoneNumber: String
+        salary: Double
+        commissionRate: Double
+        department: Department
+    }
+    VALUE_OBJECT(EmployeeIdentifier) #Bisque {
+        employeeId: UUID
+    }
+    VALUE_OBJECT(Address) #Bisque {
+        streetAddress: String
+        city: String
+        province: String
+        country: String
+        postalCode: String
+    }
+    VALUE_OBJECT(Department) #Bisque {
+        name: String
+    }
+    LibraryIdentifier <-- Employee
+    Employee --> EmployeeIdentifier
+    Employee o--> Address
+    Employee --> Department
+
+    note right of Employee
+        emailAdress must be unique
+    end note
+}
+
+@enduml

@@ -4,7 +4,7 @@ package com.example.employeeservice.utils;
 
 
 
-import com.example.employeeservice.utils.exceptions.DuplicateVinException;
+import com.example.employeeservice.utils.exceptions.DuplicateEmailException;
 import com.example.employeeservice.utils.exceptions.InvalidInputException;
 import com.example.employeeservice.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(DuplicateVinException.class)
+    @ExceptionHandler(DuplicateEmailException.class)
     public HttpErrorInfo handleDuplicateVinException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
