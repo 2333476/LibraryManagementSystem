@@ -1,0 +1,11 @@
+spring:
+    application:
+        name: api-gateway
+
+book-service:
+    base-url: http://localhost:8083/api/v1/books
+customer-service:
+    base-url: http://localhost:8082/api/v1/customers
+employee-service:
+    base-url: http://localhost:8081/api/v1/employees
+

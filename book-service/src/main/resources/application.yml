@@ -1,0 +1,18 @@
+server:
+    port: 8083
+
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/book_db
+        username: postgres
+        password: isaac
+        driver-class-name: org.postgresql.Driver
+
+    jpa:
+        hibernate:
+            ddl-auto: none
+        show-sql: true
+
+    sql:
+        init:
+            mode: always
