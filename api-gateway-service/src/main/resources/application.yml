@@ -22,8 +22,10 @@ app:
         host: localhost
         port: 8081
 
-
     book-service:
-         host: localhost
-         port: 8083
+        host: localhost
+        port: 8083
 
+    loan-service:
+        host: localhost
+        port: 8085
