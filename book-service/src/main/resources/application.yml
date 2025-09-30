@@ -1,9 +1,9 @@
-server:
-    port: 8083
-
 spring:
+    config:
+        activate:
+            on-profile: default
     datasource:
-        url: jdbc:postgresql://localhost:5432/book_db
+        url: jdbc:postgresql://localhost:5433/book_db
         username: postgres
         password: isaac
         driver-class-name: org.postgresql.Driver
@@ -16,3 +16,5 @@ spring:
     sql:
         init:
             mode: always
+            schema-locations: classpath:schema.sql
+            data-locations: classpath:data.sql

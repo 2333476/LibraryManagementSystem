@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway-service
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"  #  Only one
+    depends_on:
+      - book-service
+      - customers-service
+      - employee-service
+      - loan-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - backend
+
+  book-service:
+    build:
+      context: ./book-service
+      dockerfile: Dockerfile
+    depends_on:
+      - book-postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - backend
+
+  book-postgres:
+    image: postgres:15
+    container_name: book-postgres
+    environment:
+      POSTGRES_DB: book_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: isaac
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  customers-service:
+    build:
+      context: ./customers-service
+      dockerfile: Dockerfile
+    container_name: customers-service
+    depends_on:
+      - mysql-customers
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-customers:3306/customers_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: samoli123
+      SPRING_DATASOURCE_HIKARI_CONNECTION-TIMEOUT: 20000
+    networks:
+      - backend
+
+  mysql-customers:
+    image: mysql:8.0
+    container_name: mysql-customers
+    restart: always
+    environment:
+      MYSQL_DATABASE: customers_db
+      MYSQL_ROOT_PASSWORD: samoli123
+    volumes:
+      - mysql_customers_data:/var/lib/mysql
+    networks:
+      - backend
+
+  mysql-employee:
+    image: mysql:8.0
+    container_name: mysql-employee-container
+    restart: always
+    environment:
+      MYSQL_DATABASE: employees_db
+      MYSQL_ROOT_PASSWORD: samoli123
+    volumes:
+      - mysql_employee_data:/var/lib/mysql
+    networks:
+      - backend
+
+  employee-service:
+    build:
+      context: ./employee-service
+      dockerfile: Dockerfile
+    container_name: employee-service
+    depends_on:
+      - mysql-employee
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-employee-container:3306/employees_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: samoli123
+    networks:
+      - backend
+
+  loan-mongo:
+    image: mongo:7
+    container_name: loan-mongo
+    restart: always
+    volumes:
+      - loan_mongo_data:/data/db
+    networks:
+      - backend
+
+  loan-service:
+    build:
+      context: ./loan-service
+      dockerfile: Dockerfile
+    container_name: loan-service
+    depends_on:
+      - loan-mongo
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - backend
+
+  phpmyadmin-customers:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-customers
+    environment:
+      PMA_HOST: mysql-customers
+      PMA_PORT: 3306
+    networks:
+      - backend
+
+  phpmyadmin-employees:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-employees
+    environment:
+      PMA_HOST: mysql-employee-container
+      PMA_PORT: 3306
+    networks:
+      - backend
+
+  pgadmin-book:
+    image: dpage/pgadmin4
+    container_name: pgadmin-book
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - backend
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: loan-mongo
+    networks:
+      - backend
+
+volumes:
+  pgdata:
+  mysql_customers_data:
+  mysql_employee_data:
+  loan_mongo_data:
+
+networks:
+  backend:

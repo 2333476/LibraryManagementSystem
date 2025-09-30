@@ -8,7 +8,7 @@ public class BookResponseModel {
     private final Double price;
     private final String publishedDate;
 
-    private BookResponseModel(String bookId, String title, String author, String isbn, Double price, String publishedDate) {
+    public BookResponseModel(String bookId, String title, String author, String isbn, Double price, String publishedDate) {
         this.bookId = bookId;
         this.title = title;
         this.author = author;

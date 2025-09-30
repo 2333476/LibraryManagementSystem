@@ -1,20 +1,33 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-' uncomment the following line and comment the first to use locally
-' !include C4_Context.puml
 
 LAYOUT_WITH_LEGEND()
 
-title System Context diagram for Library Management System
+title System Context Diagram for Loan Management System
 
-Person(staff, "Librarian", "A staff of the Library Management System.")
-System(libraryManagement_System, "Library Management System", "Allows staff to access and manage book, libraries and customer data")
-Person(member, "Library Member", "A member of the Library Management System.")
-System_Ext(book_publisher, "Book Publisher", "The internal Library Management System Exchange information with the book publisher.")
+' Actors
+Person(employee, "Librarian (Employee)", "Staff member who manages loans and assists library users.")
+Person(customer, "Library Member (Customer)", "Customer who borrows books from the library.")
+
+' Our Aggregator Microservice
+System(loanSystem, "Loan Management System", "Manages the process of lending books to library members.")
+
+' Dependent Microservices
+System_Ext(bookService, "Book Service", "Provides book catalog data.")
+System_Ext(customerService, "Customer Service", "Manages customer profiles and identities.")
+System_Ext(employeeService, "Employee Service", "Manages Employee profiles and identities.")
 
 
-Rel(staff, libraryManagement_System, "Tracks inventory and customer purchases using.")
-Rel(member, libraryManagement_System, "Member book in books from the system.")
-Rel(book_publisher, libraryManagement_System, "Book Publisher exchange information with the Library Management.")
+
+' Optional External Partner
+System_Ext(bookPublisher, "Book Publisher", "Exchanges book-related metadata.")
+
+' Relationships
+Rel(employee, loanSystem, "Creates, updates, and manages loan records using")
+Rel(customer, loanSystem, "Requests loans and views status using")
+Rel(loanSystem, bookService, "Retrieves book availability and details from")
+Rel(loanSystem, customerService, "Validates and fetches customer data from")
+Rel(loanSystem, employeeService, "Validates and fetches employee data from")
+Rel(bookPublisher, loanSystem, "Synchronizes book metadata with")
 
 @enduml

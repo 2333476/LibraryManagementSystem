@@ -37,12 +37,15 @@ public class LoanControllerIntegrationTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @SuppressWarnings("removal")
     @MockBean
     private BookServiceClient bookServiceClient;
 
+    @SuppressWarnings("removal")
     @MockBean
     private CustomerServiceClient customerServiceClient;
 
+    @SuppressWarnings("removal")
     @MockBean
     private EmployeeServiceClient employeeServiceClient;
 
@@ -78,7 +81,7 @@ public class LoanControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("✔ Should add a new loan successfully")
+    @DisplayName(" Should add a new loan successfully")
     void shouldAddLoan() {
         LoanRequestModel request = new LoanRequestModel(
                 VALID_BOOK_ID, VALID_CUSTOMER_ID, VALID_EMPLOYEE_ID,
@@ -94,7 +97,7 @@ public class LoanControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("✔ Should return all loans")
+    @DisplayName("(Positive) Should return all loans")
     void shouldGetAllLoans() {
         Loan loan = Loan.builder()
                 .loanIdentifier(new LoanIdentifier("test-loan-123"))
@@ -118,7 +121,7 @@ public class LoanControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("✖ Should return 404 when loanId not found")
+    @DisplayName("(Negative) Should return 404 when loanId not found")
     void shouldReturnNotFoundWhenInvalidId() {
         webTestClient.get()
                 .uri(BASE_URL + "/non-existent-id")
@@ -127,7 +130,7 @@ public class LoanControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("✔ Should update an existing loan")
+    @DisplayName("Should update an existing loan")
     void shouldUpdateLoan() {
         Loan loan = loanRepository.save(
                 Loan.builder()
@@ -174,7 +177,8 @@ public class LoanControllerIntegrationTest {
         webTestClient.delete()
                 .uri(BASE_URL + "/" + loan.getLoanIdentifier().getLoanId())
                 .exchange()
-                .expectStatus().isNoContent();   // ✅ Correspond à @ResponseStatus(HttpStatus.NO_CONTENT)
+                .expectStatus().isNoContent();   // Correspond à @ResponseStatus(HttpStatus.NO_CONTENT)
 
     }
+
 }

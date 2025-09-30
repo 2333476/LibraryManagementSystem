@@ -2,12 +2,16 @@ package com.example.bookservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("h2")
 class BookServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.setProperty("spring.profiles.active", "h2");
+		BookServiceApplication.main(new String[] {});
 	}
 
 }

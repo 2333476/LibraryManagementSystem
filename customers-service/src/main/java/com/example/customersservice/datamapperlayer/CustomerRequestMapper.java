@@ -17,7 +17,7 @@ public interface CustomerRequestMapper {
 //    @Mapping(target = "customerIdentifier", ignore = true)
 //    @Mapping(target = "phoneNumbers", ignore = true)
 //    @Mapping(target = "customerAddresses", ignore = true)
-//    @Mapping(target = "password", ignore = true)
+//@Mapping(target = "password", ignore = true)
 @Mapping(target = "customerIdentifier", source = "customerIdentifier")
 @Mapping(target = "customerAddress", source = "address")
 @Mapping(target = "id", ignore = true)

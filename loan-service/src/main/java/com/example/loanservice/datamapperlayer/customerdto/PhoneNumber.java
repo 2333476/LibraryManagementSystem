@@ -25,8 +25,13 @@ public class PhoneNumber {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PhoneNumber)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         PhoneNumber that = (PhoneNumber) o;
         return type == that.type && Objects.equals(number, that.number);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, number);
     }
 }

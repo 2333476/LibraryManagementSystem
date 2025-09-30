@@ -1,28 +1,25 @@
 package com.example.loanservice.datamapperlayer.customerdto;
 
 import com.example.loanservice.datamapperlayer.customerdto.PhoneNumber;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CustomerResponseModel {
+@AllArgsConstructor
+@Getter
+@Setter
+public class CustomerResponseModel   {
+    private String customerId; //public identifier
+    private String lastName;
+    private String firstName;
+    private String emailAddress;
 
-    String customerId;
-    String firstName;
-    String lastName;
-    String emailAddress;
-    String streetAddress;
-    String city;
-    String province;
-    String country;
-    String postalCode;
-    List<PhoneNumber> phoneNumbers;
-
+    private String streetAddress;
+    private String postalCode;
+    private String city;
+    private String province;
+    private List<PhoneNumber> phoneNumbers;
+//    private String phoneType;
+//    private String phoneNumber;
 }

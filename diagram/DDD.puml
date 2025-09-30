@@ -3,7 +3,6 @@ hide circle
 top to bottom direction
 
 !define ENTITY(entityName) class entityName << Entity >>
-!define AGGREGATE(aggregateName) class aggregateName << Aggregate >>
 !define AGGREGATE_ROOT(aggregateRootName) class aggregateRootName << Aggregate Root >>
 !define VALUE_OBJECT(valueObjectName) class valueObjectName << Value Object >>
 !pragma useVerticalIf on
@@ -14,20 +13,27 @@ skinparam rectangle {
     BorderColor Black
 }
 
-' Aggregate Root
-Package "Library Management (Aggregate Root)" <<Rectangle>> #FFEB3B {
-    AGGREGATE_ROOT(Library) #lightpink {
-        name: String
-        address: String
-        maxCapacity: Integer
+' Loan Domain (Aggregator Microservice)
+Package "Loan Management (Aggregate Root)" <<Rectangle>> #FFEB3B {
+    AGGREGATE_ROOT(Loan) #lightpink {
+        loanId: UUID
+        loanAmount: Decimal
+        loanDate: LocalDate
+        dueDate: LocalDate
+        returnDate: LocalDate
+        status: LoanStatus
     }
-    VALUE_OBJECT(LibraryIdentifier) #Bisque {
-        libraryId: UUID
-    }
-    Library --> LibraryIdentifier
 
-    note right of Library
-        maxCapacity must be greater than 0
+    VALUE_OBJECT(LoanIdentifier) #Bisque {
+        loanId: UUID
+    }
+
+    Loan --> LoanIdentifier
+
+
+    note right of Loan
+        dueDate must be after loanDate \n
+        Loan must reference valid book, member, and librarian
     end note
 }
 
@@ -40,36 +46,36 @@ Package "Catalog Management Sub-Domain" <<Rectangle>> #D1C4E9 {
         isbn: String
         price: Double
         publishedDate: String
+        copiesAvailable: Integer
     }
     VALUE_OBJECT(BookIdentifier) #Bisque {
         bookId: UUID
     }
-    LibraryIdentifier <-- Book
     Book --> BookIdentifier
+    BookIdentifier <-- Loan
 
     note right of Book
         isbn must be unique
     end note
 }
 
-' Customer Domain
+' Member Domain
 Package "Member Management Sub-Domain" <<Rectangle>> #E8F5E9 {
-    ENTITY(Customer) #lightblue {
+    ENTITY(Member) #lightblue {
         firstName: String
         lastName: String
-        emailAddress: String
-        username: String
-        password: String
+        email: String
+        membershipType: String
         phoneNumbers: List<PhoneNumber>
     }
-    VALUE_OBJECT(CustomerIdentifier) #Bisque {
-        customerId: UUID
+    VALUE_OBJECT(MemberIdentifier) #Bisque {
+        memberId: UUID
     }
-    VALUE_OBJECT(CustomerAddress) #Bisque {
-        streetAddress: String
+    VALUE_OBJECT(MemberAddress) #Bisque {
+        street: String
         city: String
         province: String
-        postalCode: String
+        country: String
     }
     VALUE_OBJECT(PhoneNumber) #Bisque {
         type: PhoneType
@@ -78,33 +84,32 @@ Package "Member Management Sub-Domain" <<Rectangle>> #E8F5E9 {
     VALUE_OBJECT(PhoneType) #Bisque {
         value: String
     }
-    LibraryIdentifier <-- Customer
-    Customer --> CustomerIdentifier
-    Customer o--> CustomerAddress
-    Customer o--> PhoneNumber
+    Member --> MemberIdentifier
+    Member o--> MemberAddress
+    Member o--> PhoneNumber
     PhoneNumber --> PhoneType
+    MemberIdentifier <-- Loan
 
-    note right of Customer
+    note right of Member
         first name and last name must be unique
     end note
 }
 
-' Employee Domain
+' Staff Domain
 Package "Staff Management Sub-Domain" <<Rectangle>> #3399FF {
-    ENTITY(Employee) #lightblue {
+    ENTITY(Librarian) #lightblue {
         firstName: String
         lastName: String
-        emailAddress: String
-        phoneNumber: String
-        salary: Double
+        email: String
+        salary: Decimal
         commissionRate: Double
         department: Department
     }
-    VALUE_OBJECT(EmployeeIdentifier) #Bisque {
-        employeeId: UUID
+    VALUE_OBJECT(LibrarianIdentifier) #Bisque {
+        librarianId: UUID
     }
     VALUE_OBJECT(Address) #Bisque {
-        streetAddress: String
+        street: String
         city: String
         province: String
         country: String
@@ -113,13 +118,13 @@ Package "Staff Management Sub-Domain" <<Rectangle>> #3399FF {
     VALUE_OBJECT(Department) #Bisque {
         name: String
     }
-    LibraryIdentifier <-- Employee
-    Employee --> EmployeeIdentifier
-    Employee o--> Address
-    Employee --> Department
+    Librarian --> LibrarianIdentifier
+    Librarian o--> Address
+    Librarian --> Department
+    LibrarianIdentifier <-- Loan
 
-    note right of Employee
-        emailAdress must be unique
+    note right of Librarian
+        email must be unique
     end note
 }
 

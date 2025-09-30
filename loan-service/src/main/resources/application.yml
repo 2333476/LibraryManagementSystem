@@ -1,7 +1,12 @@
 server:
-    port: 8085
+    port: 8080
+    #8085
 
 spring:
+    config:
+        activate:
+            on-profile: default
+
     data:
         mongodb:
             host: localhost
@@ -11,12 +16,15 @@ spring:
 app:
     book-service:
         host: localhost
-        port: 8083
+        port: 8080
+        #8083
 
     customer-service:
         host: localhost
-        port: 8081
+        port: 8080
+        #8081
 
     employee-service:
         host: localhost
-        port: 8082
+        port: 8080
+        #8082

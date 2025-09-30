@@ -2,7 +2,6 @@ package com.example.loanservice;
 
 import com.example.loanservice.utils.exceptions.InvalidInputException;
 import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InvalidInputExceptionTest {

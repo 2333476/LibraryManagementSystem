@@ -16,9 +16,9 @@ public class EmployeeRequestModel {
     private final String postalCode;
 
     // ✅ Constructeur privé (équivalent de @AllArgsConstructor(access = PRIVATE))
-    private EmployeeRequestModel(String firstName, String lastName, String emailAddress, String phoneNumber,
-                                 Double salary, Double commissionRate, Department department,
-                                 String streetAddress, String city, String province, String country, String postalCode) {
+    public EmployeeRequestModel(String firstName, String lastName, String emailAddress, String phoneNumber,
+                                Double salary, Double commissionRate, Department department,
+                                String streetAddress, String city, String province, String country, String postalCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;

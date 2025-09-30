@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  #8085
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  data:
+    mongodb:
+      host: loan-mongo
+      port: 27017
+      database: loan_db
+
+app:
+  book-service:
+    host: book-service
+    port: 8080
+    #8083
+
+  customer-service:
+    host: customers-service
+    port: 8080
+    #8081
+
+  employee-service:
+    host: employee-service
+    port: 8080
+    #8082

@@ -21,7 +21,7 @@ public class PhoneNumberTest {
         PhoneNumber p1 = new PhoneNumber(PhoneType.MOBILE, "514-123-4567");
         PhoneNumber p2 = new PhoneNumber(PhoneType.MOBILE, "514-123-4567");
 
-        assertEquals(p1, p2);              // compare par contenu
-        assertEquals(p1.hashCode(), p2.hashCode()); // compare les hashcodes aussi
+        assertEquals(p1, p2);                          // checks content equality
+        assertEquals(p1.hashCode(), p2.hashCode());    // checks hash consistency
     }
 }

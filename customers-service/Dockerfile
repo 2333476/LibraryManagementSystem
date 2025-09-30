@@ -1,9 +1,20 @@
-FROM gradle:8.5.0-jdk21 AS build
-WORKDIR /home/gradle/project
-COPY --chown=gradle:gradle . .
-RUN ./gradlew clean build -x test --no-daemon --no-build-cache
+# Use OpenJDK 21 as base image
+FROM openjdk:21-jdk
 
-FROM eclipse-temurin:21-jre
+# Label for maintainers
+LABEL maintainer="oligo"
+
+# Set the working directory inside the container
 WORKDIR /app
-COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
+
+# Copy the JAR file into the container (adjust the name if needed)
+COPY build/libs/customers-service-0.0.1-SNAPSHOT.jar app.jar
+
+
+# Expose the port used by this service
+EXPOSE 8080
+#8081
+
+# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
